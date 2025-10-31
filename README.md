@@ -1,4 +1,3 @@
-```markdown
 # Notes App — Fullstack + DevOps Demo
 
 **One-line:** A simple Notes CRUD app (Node.js + MongoDB) containerized with Docker, deployed to Kubernetes (Minikube manifests included), with CI/CD & monitoring notes.
@@ -84,5 +83,3 @@ minikube service backend -n notes-app
 * `k8s/backend.yaml`: includes livenessProbe and readinessProbe and resources.requests so HPA can function.
 * `k8s/mongo.yaml`: uses ClusterIP and a PersistentVolume or emptyDir for dev.
 * `k8s/ingress.yaml`: example ingress rules (minikube may require tunnel)
-
-```
