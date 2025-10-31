@@ -21,7 +21,24 @@ This repository demonstrates a full developer → platform flow:
 ---
 
 ## 🗂 Repo Structure
-project-root/ ├─ notes-app/                # Node.js backend │  ├─ package.json │  ├─ src/ │  └─ Dockerfile ├─ k8s/ │  ├─ backend.yaml          # Deployment + Service (ClusterIP) │  ├─ mongo.yaml │  └─ ingress.yaml ├─ monitoring/              # Prometheus & Grafana docker-compose ├─ .github/                 # Example CI workflows (optional) ├─ .gitignore └─ README.md
+
+```
+notes-app-devops/
+├── notes-app/              # Node.js backend
+│   ├── package.json
+│   ├── src/
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   ├── .dockerignore
+│   └── package-lock.json
+├── k8s/                    # Kubernetes manifests
+│   ├── backend.yaml        # Deployment + Service (ClusterIP)
+│   ├── mongo.yaml
+│   ├── ingress.yaml
+│   └── configmap.yaml
+├── .gitignore
+└── README.md
+```
 
 ---
 
@@ -30,47 +47,42 @@ project-root/ ├─ notes-app/                # Node.js backend │  ├─ pac
 ### 1) Using docker-compose (fast)
 
 ```bash
-# start mongo + app (from project root)
-docker compose up --build
+# Start mongo + app (from project root)
+docker compose -f notes-app/docker-compose.yml up --build
 ```
 
-# open http://localhost:3000/notes
+# Open http://localhost:3000/notes
 
 ### 2) Using Kubernetes (Minikube)
 
 ```bash
-# ensure minikube is running
+# Ensure minikube is running
 minikube start
 
-# build image inside minikube
+# Build image inside minikube
 eval $(minikube docker-env)
 docker build -t notes-backend:latest ./notes-app
 
-# apply manifests
+# Apply manifests
 kubectl apply -f k8s/
 
-# expose via minikube service
+# Expose via minikube service
 minikube service backend -n notes-app
 ```
 
 ✅ Key Features & Why They Matter
 
 * Multi-stage Dockerfile — small, secure images
-
 * Health checks — liveness & readiness probes for stability
-
 * ConfigMap usage — environment configs managed free of rebuilds
-
 * HPA — demonstrates autoscaling behavior under load
 
-* Monitoring — Prometheus (metrics) + Grafana (dashboards)
+*Monitoring and CI/CD examples are not included in this repo structure. Add your own Prometheus/Grafana configs and CI/CD workflows as needed.*
 
-📁 K8s Manifests (what to check)
+📁 K8s Manifests (what to check):
 
-* k8s/backend.yaml: includes livenessProbe and readinessProbe and resources.requests so HPA can function.
-
-* k8s/mongo.yaml: uses ClusterIP and a PersistentVolume or emptyDir for dev.
-
-* k8s/ingress.yaml: example ingress rules (minikube may require tunnel)
+* `k8s/backend.yaml`: includes livenessProbe and readinessProbe and resources.requests so HPA can function.
+* `k8s/mongo.yaml`: uses ClusterIP and a PersistentVolume or emptyDir for dev.
+* `k8s/ingress.yaml`: example ingress rules (minikube may require tunnel)
 
 ```
